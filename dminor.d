@@ -49,12 +49,16 @@ class ShareCached
     {
         string *s;
         s = (key in dict);
-        return *s;
+        if (s) {
+            return *s;
+        }
+
+        return null;
     }
 
     void addNode(Socket conn)
     {
-        writeln("Got connection", conn);
+        writeln("Got connection %s", conn);
         socketHandlers[conn] = new KDProtocol();
         socketHandlers[conn].makeConnection(conn, this);
     }
@@ -158,9 +162,9 @@ class LineProtocol : Protocol
     {
     }
 
-    void sendCommand(string token, in string[] args ...)
+    void sendCommand(string first, in string[] rest ...)
     {
-        sendString(token ~ " " ~ args.join(" "));
+        sendString(first ~ " " ~ rest.join(" "));
     }
 
     ptrdiff_t sendString(string s)
